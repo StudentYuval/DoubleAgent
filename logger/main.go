@@ -7,7 +7,6 @@ void logInfo(const char* msg) {
     __android_log_write(ANDROID_LOG_INFO, "GoLog", msg);
 }
 */
-
 import "C"
 import "unsafe"
 

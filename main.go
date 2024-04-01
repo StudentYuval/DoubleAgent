@@ -1,13 +1,11 @@
-package DoubleAgent
+package main
 
 import (
-	"doubleAgent/logger"
-	"runtime"
+	"fmt"
 )
 
 func main() {
-
-	logger.LogInfo("Hello Logcat!!")
+	fmt.Println("hello world!")
 	// Crash Detector and Semaphore Initialization:
 
 	// 1. Crash detector and semaphore are initialized using their respective
@@ -53,5 +51,4 @@ func main() {
 	// continues here. The deferred `sem.Release()` ensures the semaphore is
 	// released, allowing other potential instances to acquire it and proceed.
 
-	runtime.Goexit() // Exit the program gracefully
 }
