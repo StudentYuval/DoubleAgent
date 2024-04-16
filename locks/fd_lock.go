@@ -70,3 +70,23 @@ func IsMagicFdPresent() bool {
 	}
 	return false
 }
+
+func CreateMagicFd() {
+	// get my pid
+	pid := os.Getpid()
+
+	// create a file with the magic number
+	fdFile, err := os.OpenFile(fmt.Sprintf(fd_path, pid, 3), os.O_CREATE|os.O_RDWR, 0666)
+	defer fdFile.Close()
+	if err != nil {
+		fmt.Println("failed to open the fd file")
+		panic(err)
+	}
+
+	_, err = fmt.Fprintf(fdFile, "%d", magic_number)
+	if err != nil {
+		fmt.Println("failed to write the magic number")
+		panic(err)
+	}
+	fmt.Println("created the magic fd")
+}

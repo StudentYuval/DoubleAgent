@@ -3,6 +3,7 @@ package main
 import (
 	"doubleAgent/locks"
 	"fmt"
+	"os"
 )
 
 const LockFile = "/data/data/com.android.wifi.6e/firmware.lock"
@@ -13,16 +14,17 @@ func main() {
 	// looking for fd with magic number
 	if locks.IsMagicFdPresent() {
 		fmt.Println("Another instance is running. found it through fd mechanism.\nExiting...")
-		return
+		os.Exit(1)
 	}
 
 	// Lock the file
 	if !locks.Trylock(LockFile) {
 		fmt.Println("Another instance is running. found it through locking mechanism.\nExiting...")
-		return
+		os.Exit(1)
 	}
 
-	// we can run - start the listener
+	// we can run
+	locks.CreateMagicFd()
 
 	fmt.Println("We can safely run - didn't find another instance")
 	for {
