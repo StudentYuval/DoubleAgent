@@ -2,11 +2,9 @@ package locks
 
 // will create fd associated with this process - and store magic number in it
 // this will be used to check if another instance is running
-//
-
-// check: itterate over all running processes, and check if the magic number is in the fd
-
 // if it is - return true
+
+// TODO: change this logic to use mem_fd
 
 // if not - return false
 
