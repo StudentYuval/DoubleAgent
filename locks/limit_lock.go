@@ -2,8 +2,6 @@ package locks
 
 /*
 #include <sys/resource.h>
-#include <stdio.h>
-
 #define NEW_LIMIT 1234
 
 int set_soft_limit(){
