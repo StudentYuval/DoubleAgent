@@ -1,22 +1,23 @@
 package locks
 
-// will create fd associated with this process - and store magic number in it
-// this will be used to check if another instance is running
-// if it is - return true
-
-// TODO: change this logic to use mem_fd
-
-// if not - return false
-
 import (
 	"fmt"
 	"os"
 )
 
+// TODO: change this logic to use mem_fd
+
+type FdLock struct{}
+type FdLockFactory struct{}
+
+func (f *FdLockFactory) NewLock() Lock {
+	return &FdLock{}
+}
+
 const fd_path = "/proc/%d/fd/%d"
 const magic_number = 0x12345678
 
-func IsMagicFdPresent() bool {
+func (l *FdLock) IsLocked() bool {
 
 	// iterate over all running processes, and check if the magic number is in the fd
 
@@ -69,7 +70,7 @@ func IsMagicFdPresent() bool {
 	return false
 }
 
-func CreateMagicFd() {
+func (l *FdLock) Acquire() error {
 	// get my pid
 	pid := os.Getpid()
 
@@ -78,13 +79,28 @@ func CreateMagicFd() {
 	defer fdFile.Close()
 	if err != nil {
 		fmt.Println("failed to open the fd file")
-		panic(err)
+		return err
 	}
 
 	_, err = fmt.Fprintf(fdFile, "%d", magic_number)
 	if err != nil {
 		fmt.Println("failed to write the magic number")
-		panic(err)
+		return err
 	}
 	fmt.Println("created the magic fd")
+	return nil
+}
+
+func (l *FdLock) Release() error {
+	// get my pid
+	pid := os.Getpid()
+
+	// remove the file with the magic number
+	err := os.Remove(fmt.Sprintf(fd_path, pid, 3))
+	if err != nil {
+		fmt.Println("failed to remove the fd file")
+		return err
+	}
+	fmt.Println("removed the magic fd")
+	return nil
 }
